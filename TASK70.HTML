@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input {
+            width: 400px;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-left: 10px;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>URL Shortener</h2>
+
+    <input
+        type="text"
+        id="urlInput"
+        placeholder="Enter URL"
+    >
+
+    <button onclick="shortenURL()">
+        Shorten
+    </button>
+
+    <div id="result"></div>
+
+    <script>
+        async function shortenURL() {
+
+            const url =
+                document.getElementById("urlInput").value;
+
+            if (!url) {
+                alert("Enter a URL");
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    "http://localhost:3000/shorten",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+                        body: JSON.stringify({
+                            originalUrl: url
+                        })
+                    }
+                );
+
+                const data =
+                    await response.json();
+
+                document.getElementById(
+                    "result"
+                ).innerHTML =
+                    `<a href="${data.shortUrl}" target="_blank">
+                        ${data.shortUrl}
+                    </a>`;
+
+            } catch (error) {
+                document.getElementById(
+                    "result"
+                ).innerHTML =
+                    "Backend server not running!";
+            }
+        }
+    </script>
+
+</body>
+</html>
